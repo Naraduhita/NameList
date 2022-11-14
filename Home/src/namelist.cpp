@@ -1,6 +1,9 @@
 #include <iostream>
 #include <list>
 #include <graphics.h>
+#include <sstream>
+#include <string>
+#define TOTAL 100
 
 using namespace std;
 
@@ -8,7 +11,7 @@ class point
 {
 private:
     int urut;
-    int x, y,x1,x2,y1,y2;
+    int x, y;
 
 public:
     // constractor pertama
@@ -24,12 +27,7 @@ public:
         y = _y;
         urut = _urut;
     }
-    point(int _x1, int _x2, int _y1, int _y2){
-        x1 = _x1;
-        x2 = _x2;
-        y1 = _y1;
-        y2 = _y2;
-    }
+
     int get_urut()
     {
         return urut;
@@ -44,80 +42,67 @@ public:
     {
         return y;
     }
-
-    int get_x1()
-    {
-        return x1;
-    }
-
-    int get_x2()
-    {
-        return x2;
-    }
-
-    int get_y1()
-    {
-        return y1;
-    }
-
-    int get_y2()
-    {
-        return y2;
-    }
 };
 
 // cetak list
-void print(list<int> &mylist, int index)
+void print(list<point> &mylist, int index)
 {
     cout << "The list elements stored at the index " << index << ": \n";
-
-    // Each element of the list is a pair on
-    // its own
-    for (list<int>::iterator i = mylist.begin(); i != mylist.end(); i++)
+    for (list<point>::iterator i = mylist.begin(); i != mylist.end(); i++)
     {
-        // Each element of the list is a pair
-        // on its own
-        cout << *i << " -> ";
+        cout << (*i).get_urut() << " " << (*i).get_x() << " -> ";
     }
     cout << '\n';
 }
-
-// Function to iterate over all the array
-void print(list<int> *myContainer, int n)
+void print(list<point> *myContainer, int n)
 {
     cout << "myContainer elements:\n\n";
-
-    // looping hingga kurang dari n
     for (int i = 0; i < n; i++)
     {
         print(myContainer[i], i);
     }
 }
+void printLine(list<point> &mylist, int index)
+{
+    cout << "The list elements stored at the index " << index << ": \n";
+    for (list<point>::iterator i = mylist.begin(); i != mylist.end(); i++)
+    {
+        cout << (*i).get_urut() << ""
+             << " -> ";
+    }
+    cout << '\n';
+}
 
-void tampilname(list<point> *info, int N)
+void tampilname(list<point> *info, int N, list<point> *myContainer)
 {
     int urut, x, y;
-
+    int x2, y2;
     int gm, gd = DETECT, i;
-    // int midx, midy;
-    int stangle = 45, endangle = 50;
-    int radius = 30;
-
-    char data[] = "C:\\MinGW\\lib\\libbgi.a"; // static file
-
-    initgraph(&gd, &gm, data);
-    x = getmaxx(); // to get the co-ordinates i.e. x & y
+    char data[] = "C:\\MinGW\\lib\\libbgi.a";
+    initwindow(getmaxwidth(), getmaxheight());
+    x = getmaxx();
     y = getmaxy();
     cleardevice();
-
+    cout << x << " " << y << endl;
     for (list<point>::iterator i = info->begin(); i != info->end(); i++)
     {
-        // Each element of the list is a pair
-        // on its own
+        cout << (*i).get_urut() << " -> ";
         urut = (*i).get_urut();
         x = (*i).get_x();
         y = (*i).get_y();
-        circle(x, y, 8);
+        cout << "(" << urut << "," << x << "," << y << ") ";
+    }
+    cout << endl;
+    for (int i = 0; i < TOTAL; i++)
+    {
+        for (list<point>::iterator i2 = myContainer[i].begin(); i2 != myContainer[i].end(); i2++)
+        {
+            list<point>::iterator info2 = next(info->begin(), (*i2).get_urut());
+            list<point>::iterator info3 = next(info->begin(), i);
+            cout << "line from (u, x, y) => (" << (*info3).get_urut() << ", " << (*info3).get_x() << ", " << (*info3).get_y() << ")"
+                 << " to (" << (*info2).get_urut() << ", " << (*info2).get_x() << ", " << (*info2).get_y() << ")" << endl;
+            line((*info3).get_x(), (*info3).get_y(), (*info2).get_x(), (*info2).get_y());
+        }
     }
     getch();
     closegraph();
@@ -125,7 +110,6 @@ void tampilname(list<point> *info, int N)
 
 int main()
 {
-    int N = 20;
     // membuat pointer yang menunjuk ke list bertipe point
     list<point> *infoPoint;
 
@@ -133,11 +117,11 @@ int main()
     infoPoint = new list<point>;
 
     // N
-    infoPoint->push_back(point(1, 50, 50));
-    infoPoint->push_back(point(2, 50, 100));
-    infoPoint->push_back(point(3, 100, 50));
-    infoPoint->push_back(point(4, 100, 100));
-    infoPoint->push_back(point(5, 125, 100));
+    infoPoint->push_back(point(0, 50, 50));
+    infoPoint->push_back(point(1, 50, 100));
+    infoPoint->push_back(point(2, 100, 50));
+    infoPoint->push_back(point(3, 100, 100));
+    infoPoint->push_back(point(4, 125, 100));
 
     // A
     infoPoint->push_back(point(6, 138, 75));
@@ -145,12 +129,6 @@ int main()
     infoPoint->push_back(point(8, 163, 75));
     infoPoint->push_back(point(9, 175, 100));
     infoPoint->push_back(point(10, 200, 100));
-    // line(125, 100, 138, 75);
-    // line(138, 75, 150, 50);
-    // line(138, 75, 163, 75);
-    // line(150, 50, 163, 75);
-    // line(163, 75, 175, 100);
-    // line(175, 100, 200, 100);
 
     // R
     infoPoint->push_back(point(11, 200, 75));
@@ -159,99 +137,51 @@ int main()
     infoPoint->push_back(point(14, 225, 75));
     infoPoint->push_back(point(15, 250, 100));
     infoPoint->push_back(point(16, 275, 100));
-    // line(200,100, 200,75);
-    // line(200,75, 200,50);
-    // line(200,50, 225,50);
-    // line(225,50, 225,75);
-    // line(225,75, 250,100);
-    // line(200,75, 225,75);
-    // line(250,100, 275,100);
 
     // A
     infoPoint->push_back(point(17, 288, 75));
     infoPoint->push_back(point(18, 300, 50));
     infoPoint->push_back(point(19, 313, 75));
     infoPoint->push_back(point(20, 325, 100));
-    // line(275,100,288,75);
-    // line(288,75,300,50);
-    // line(300,50,313,75);
-    // line(313,75,325,100);
-    // line(288,75,313,75);
-
-    // smile
-    //  setcolor(YELLOW);
-    //  circle(364,85,30);
-    //  setfillstyle (SOLID_FILL, YELLOW);
-    //  floodfill(364, 100, YELLOW);
-
-    // setcolor(2);
-    // fillellipse(350,75, 2, 6);
-    // fillellipse(375,75, 2, 6);
-    // ellipse(364,90,205,335,20,9);
-    // ellipse(364,90,205,335,20,10);
-    // ellipse(364,90,205,335,20,11);
 
     // membuat adjencendy list
     //[awal].push_back(tujuan)
-    list<int> myContainer[N];
+    list<point> name[TOTAL];
     // N
-    myContainer[1].push_back(2);
-    myContainer[1].push_back(4);
-    myContainer[2].push_back(1);
-    myContainer[3].push_back(4);
-    myContainer[4].push_back(1);
-    myContainer[4].push_back(3);
-    myContainer[4].push_back(5);
+    name[0].push_back(1);
+    name[0].push_back(3);
+    name[2].push_back(3);
+    name[3].push_back(4);
+
     // A
-    myContainer[5].push_back(4);
-    myContainer[5].push_back(6);
-    myContainer[6].push_back(5);
-    myContainer[6].push_back(8);
-    myContainer[6].push_back(7);
-    myContainer[7].push_back(6);
-    myContainer[7].push_back(8);
-    myContainer[8].push_back(7);
-    myContainer[8].push_back(6);
-    myContainer[8].push_back(9);
-    myContainer[9].push_back(8);
-    myContainer[9].push_back(10);
+    name[5].push_back(4);
+    name[5].push_back(6);
+    name[6].push_back(8);
+    name[6].push_back(7);
+    name[5].push_back(7);
+    name[8].push_back(9);
+
     // R
-    myContainer[10].push_back(9);
-    myContainer[10].push_back(11);
-    myContainer[11].push_back(10);
-    myContainer[11].push_back(12);
-    myContainer[11].push_back(14);
-    myContainer[12].push_back(11);
-    myContainer[12].push_back(13);
-    myContainer[13].push_back(12);
-    myContainer[13].push_back(14);
-    myContainer[14].push_back(11);
-    myContainer[14].push_back(13);
-    myContainer[14].push_back(15);
-    myContainer[15].push_back(14);
-    myContainer[15].push_back(16);
+    name[10].push_back(9);
+    name[10].push_back(11);
+    name[11].push_back(12);
+    name[10].push_back(13);
+    name[12].push_back(13);
+    name[13].push_back(14);
+    name[14].push_back(15);
+
     // A
-    myContainer[16].push_back(15);
-    myContainer[16].push_back(17);
-    myContainer[17].push_back(16);
-    myContainer[17].push_back(18);
-    myContainer[17].push_back(19);
-    myContainer[18].push_back(17);
-    myContainer[18].push_back(19);
-    myContainer[19].push_back(17);
-    myContainer[19].push_back(18);
-    myContainer[19].push_back(20);
+    name[16].push_back(15);
+    name[16].push_back(17);
+    name[17].push_back(18);
+    name[16].push_back(18);
+    name[18].push_back(19);
 
     // cetak list
-    print(myContainer, N);
+    // print(name, TOTAL);
 
     // menampilkan graphics
-    tampilname(infoPoint, N);
-
-    // line(50, 100, 50, 50);
-    // line(50, 50, 100, 100);
-    // line(100, 100, 100, 50);
-    // line(100, 100, 125, 100);
+    tampilname(infoPoint, TOTAL, name);
 
     return 0;
 }
