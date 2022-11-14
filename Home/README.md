@@ -18,12 +18,6 @@ Detail setup can be found on my other repo [solution-to-graphics.h](https://gith
     └───src
 ```
 
-- Just `Ctrl+Shift+B` to run the build task you will get the executable file in build folder
-
-## !mportant
-
-- Folder `src` contains source code
-
-- Folder `build` where compiler generate .exe
-
-- .vscode contains c_cpp_properties.json and task require modification according to your environment and types compiler
+> name : graphics nama tanpa list
+> namelist : graphics nama dengan list dengan titik
+> namelistku : graphics nama dengan list tanpa titik
